@@ -1,11 +1,29 @@
-O projeto "Índice de Palavras" é um programa escrito em C que implementa um índice de palavras utilizando uma estrutura de árvore binária de busca. Ele oferece várias funcionalidades para manipular o índice, como inserir palavras, remover palavras, contar ocorrências de uma palavra específica, calcular a soma total de ocorrências, exibir as palavras em ordem alfabética, exibir palavras que começam com uma determinada letra, mostrar as palavras com o maior número de ocorrências e mostrar as palavras com apenas uma ocorrência.
+# Contador de Palavras
 
-O programa utiliza uma estrutura de dados PALAVRA para representar cada nó da árvore binária. Cada nó contém uma palavra, um contador de ocorrências e ponteiros para os nós filho esquerdo e direito.
+Este é um programa em C que conta palavras em um texto e permite realizar várias operações relacionadas a essas palavras.
 
-Além disso, é utilizado uma estrutura de dados LETRA para representar cada letra do alfabeto. Cada letra possui um caractere correspondente, um ponteiro para a próxima letra e um ponteiro para a árvore binária de palavras associada a essa letra.
+## Funcionalidades
 
-A estrutura de dados INDICE é utilizada para armazenar um conjunto de letras. Cada elemento da estrutura contém um ponteiro para a primeira letra e um ponteiro para a última letra.
+O programa oferece as seguintes funcionalidades:
 
-O programa principal apresenta um menu interativo que permite ao usuário escolher entre várias opções de operações no índice de palavras.
+- Inserir palavras: permite inserir palavras no contador.
+- Remover palavra: permite remover uma palavra do contador.
+- Ocorrências: exibe o número de ocorrências de uma palavra.
+- Contar palavras: exibe o número total de palavras presentes no contador.
+- Contar número de ocorrências: exibe a soma total das ocorrências de todas as palavras.
+- Mostrar palavras em ordem alfabética: exibe todas as palavras em ordem alfabética.
+- Mostrar todas as palavras de uma letra: exibe todas as palavras que começam com uma determinada letra.
+- Mostrar palavras com o maior número de ocorrências: exibe as palavras com o maior número de ocorrências.
+- Mostrar palavras com apenas 1 ocorrência: exibe as palavras que possuem apenas uma ocorrência.
 
-Em resumo, o "Índice de Palavras" é um programa versátil que oferece uma maneira eficiente de armazenar e manipular palavras em um índice, facilitando a busca e análise de informações relacionadas a palavras e suas ocorrências.
+## Uso
+
+Ao executar o programa, você será apresentado a um menu com as opções disponíveis. Basta digitar o número correspondente à opção desejada e seguir as instruções apresentadas na tela.
+
+## Contribuição
+
+Contribuições são bem-vindas! Se você encontrou um bug, tem uma sugestão ou deseja adicionar uma nova funcionalidade, sinta-se à vontade para abrir uma issue ou enviar um pull request.
+
+## Licença
+
+Este programa é licenciado sob a [MIT License](https://opensource.org/licenses/MIT).
