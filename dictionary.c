@@ -2,14 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct letra{
+struct letra {
   char letra;
   struct letra *prox;
   struct palavra *arvoreBinaria;
 };
 typedef struct letra LETRA;
 
-struct palavra{
+struct palavra {
   char palavra[30];
   int ocorrencias;
   struct palavra *esq;
@@ -18,15 +18,14 @@ struct palavra{
 
 typedef struct palavra PALAVRA;
 
-struct indice{
+struct indice {
   struct letra *inicio;
   struct letra *fim;
 };
 
 typedef struct indice INDICE;
 
-
-struct nodoLista{
+struct nodoLista {
   PALAVRA *raiz;
   struct nodoLista *prox;
   struct nodoLista *ant;
@@ -34,225 +33,231 @@ struct nodoLista{
 
 typedef struct nodoLista FILA;
 
-void inicializa_tabela(INDICE tabela[]){
-  for(int i = 0; i < 26; i++){
+// Inicializa a tabela de índices com NULL
+void inicializa_tabela(INDICE tabela[]) {
+  for (int i = 0; i < 26; i++) {
     tabela[i].inicio = NULL;
     tabela[i].fim = NULL;
   }
 }
 
-
-void insere_letras(INDICE tabela[]){
-  for(int i = 97; i < 123; i++){
+// Insere as letras do alfabeto na tabela de índices
+void insere_letras(INDICE tabela[]) {
+  for (int i = 97; i < 123; i++) {
     LETRA *nodo = (LETRA *)malloc(sizeof(LETRA));
-    nodo -> letra = i;
-    nodo -> prox = NULL;
-    nodo -> arvoreBinaria = NULL;
-    
+    nodo->letra = i;
+    nodo->prox = NULL;
+    nodo->arvoreBinaria = NULL;
 
     int chave = i % 26;
 
-    if(tabela[chave].inicio == NULL){
+    if (tabela[chave].inicio == NULL) {
       tabela[chave].inicio = nodo;
       tabela[chave].fim = nodo;
     } else {
-      tabela[chave].fim -> prox = nodo;
+      tabela[chave].fim->prox = nodo;
       tabela[chave].fim = nodo;
     }
   }
 }
 
-void escreve_tabela(INDICE tabela[]){
-    int i;
+// Função para escrever a tabela de índices (usada para depuração)
+void escreve_tabela(INDICE tabela[]) {
+  int i;
 
-    for(i=0; i<26; i++){
-        printf("Resto %d\n", i);
-        LETRA *aux = tabela[i].inicio;
-        while ( aux != NULL ){
-            printf("%c\n", aux-> letra);
-            aux = aux->prox;
-        }
-        
+  for (i = 0; i < 26; i++) {
+    printf("Resto %d\n", i);
+    LETRA *aux = tabela[i].inicio;
+    while (aux != NULL) {
+      printf("%c\n", aux->letra);
+      aux = aux->prox;
     }
+  }
 }
 
-
-int buscaSequencial(int resto, INDICE *vetor){
+// Função para realizar uma busca sequencial em um vetor
+int buscaSequencial(int resto, INDICE *vetor) {
   return resto % 26;
 }
-  
-void insercao(PALAVRA **raiz, char *palavra){
-  if(*raiz == NULL){
-    PALAVRA *nodo = (PALAVRA*)malloc(sizeof(PALAVRA));
-    strcpy(nodo -> palavra, palavra);
-    nodo -> esq = NULL;
-    nodo -> dir = NULL;
-    nodo -> ocorrencias = 1;
+
+// Função para inserir uma palavra em uma árvore binária de busca
+void insercao(PALAVRA **raiz, char *palavra) {
+  if (*raiz == NULL) {
+    PALAVRA *nodo = (PALAVRA *)malloc(sizeof(PALAVRA));
+    strcpy(nodo->palavra, palavra);
+    nodo->esq = NULL;
+    nodo->dir = NULL;
+    nodo->ocorrencias = 1;
     *raiz = nodo;
-  } else if(strcmp((*raiz) -> palavra, palavra) == 0) {
+  } else if (strcmp((*raiz)->palavra, palavra) == 0) {
     printf("Esse elemento já existe na árvore\n");
-    (*raiz) -> ocorrencias++;
+    (*raiz)->ocorrencias++;
     return;
-  } else if(strcmp(palavra, (*raiz) -> palavra) < 0){
-    insercao(&(*raiz) -> esq, palavra);
+  } else if (strcmp(palavra, (*raiz)->palavra) < 0) {
+    insercao(&(*raiz)->esq, palavra);
   } else {
-    insercao(&(*raiz) -> dir, palavra);
+    insercao(&(*raiz)->dir, palavra);
   }
 }
 
-void remocao(PALAVRA **raiz, char *palavra){ 
-  if(*raiz == NULL){
+// Função para remover uma palavra de uma árvore binária de busca
+void remocao(PALAVRA **raiz, char *palavra) {
+  if (*raiz == NULL) {
     return;
-  } else if(strcmp((*raiz) -> palavra, palavra) > 0) {
-    remocao(&(*raiz) -> esq, palavra);
-    }else if(strcmp((*raiz)-> palavra, palavra) < 0){
-    remocao(&(*raiz) -> dir, palavra);
-    }else if((*raiz) -> esq == NULL && (*raiz) -> dir == NULL){
+  } else if (strcmp((*raiz)->palavra, palavra) > 0) {
+    remocao(&(*raiz)->esq, palavra);
+  } else if (strcmp((*raiz)->palavra, palavra) < 0) {
+    remocao(&(*raiz)->dir, palavra);
+  } else if ((*raiz)->esq == NULL && (*raiz)->dir == NULL) {
     free(*raiz);
     *raiz = NULL;
-  } else if((*raiz) -> esq == NULL){
+  } else if ((*raiz)->esq == NULL) {
     PALAVRA *aux = *raiz;
-    *raiz = (*raiz) -> dir;
+    *raiz = (*raiz)->dir;
     free(aux);
-  } else if((*raiz) -> dir == NULL){
+  } else if ((*raiz)->dir == NULL) {
     PALAVRA *aux = *raiz;
-    *raiz = (*raiz) -> esq;
+    *raiz = (*raiz)->esq;
     free(aux);
   } else {
-     PALAVRA *aux = (*raiz)->esq;
-            while (aux->dir != NULL ){
-                aux = aux->dir;
-            }
-            strcpy((*raiz) -> palavra, aux -> palavra);
-            remocao(&(*raiz)->esq, aux->palavra);
-
+    PALAVRA *aux = (*raiz)->esq;
+    while (aux->dir != NULL) {
+      aux = aux->dir;
+    }
+    strcpy((*raiz)->palavra, aux->palavra);
+    remocao(&(*raiz)->esq, aux->palavra);
   }
 }
 
-void inserirFila(FILA **inicio, FILA **fim, PALAVRA *raiz){
-  FILA *nodo = (FILA*)malloc(sizeof(FILA));
-  nodo -> raiz = raiz;
-  nodo -> prox = NULL;
-  nodo -> ant = NULL;
-  
-  if(*inicio == NULL){
+// Função para inserir um nó na fila
+void inserirFila(FILA **inicio, FILA **fim, PALAVRA *raiz) {
+  FILA *nodo = (FILA *)malloc(sizeof(FILA));
+  nodo->raiz = raiz;
+  nodo->prox = NULL;
+  nodo->ant = NULL;
+
+  if (*inicio == NULL) {
     *inicio = nodo;
     *fim = nodo;
   } else {
-    nodo -> ant = *fim;
-    (*fim) -> prox = nodo;
+    nodo->ant = *fim;
+    (*fim)->prox = nodo;
     *fim = nodo;
   }
 }
 
-int removeFila(FILA **inicio, FILA **fim){
+// Função para remover um nó da fila e retornar o valor de suas ocorrências
+int removeFila(FILA **inicio, FILA **fim) {
   int valor;
-  if(*inicio == NULL){
+  if (*inicio == NULL) {
     return 0;
-  } else if(*inicio == *fim){
+  } else if (*inicio == *fim) {
     FILA *aux = *inicio;
     *inicio = NULL;
     *fim = NULL;
-    valor = aux -> raiz -> ocorrencias;
+    valor = aux->raiz->ocorrencias;
     free(aux);
     return valor;
   } else {
     FILA *aux = *inicio;
-    (*inicio) -> prox -> ant = NULL;
-    *inicio = (*inicio) -> prox;
-    valor = aux -> raiz -> ocorrencias;
-    return valor;
+    (*inicio)->prox->ant = NULL;
+    *inicio = (*inicio)->prox;
+    valor = aux->raiz->ocorrencias;
     free(aux);
+    return valor;
   }
 }
 
-int percurso_em_nivel(PALAVRA *raiz){
-      FILA *inicio = NULL, *fim = NULL;
-      int aux1 = 0;
-      int aux2 = 0;
-  
-      if(raiz == NULL){
-        return 0;
-      }
-  
-      inserirFila(&inicio, &fim, raiz);
-      while(inicio != NULL){
-      aux1 = removeFila(&inicio, &fim);
-        if(aux1 > aux2){
-          aux2 = aux1;
-        }
-        if(raiz -> esq != NULL){
-          inserirFila(&inicio, &fim, raiz -> esq);
-        }
+// Função para percorrer a árvore em nível e encontrar o maior número de ocorrências
+int percurso_em_nivel(PALAVRA *raiz) {
+  FILA *inicio = NULL, *fim = NULL;
+  int aux1 = 0;
+  int aux2 = 0;
 
-        if(raiz -> dir != NULL){
-          inserirFila(&inicio, &fim, raiz -> dir);
-        }
-      }
-  
-    return aux2;
+  if (raiz == NULL) {
+    return 0;
   }
 
-void em_ordem(PALAVRA *raiz){
-  if(raiz != NULL){
-    em_ordem(raiz -> esq);
-    printf("%s\n", raiz -> palavra);
-    em_ordem(raiz -> dir);
+  inserirFila(&inicio, &fim, raiz);
+  while (inicio != NULL) {
+    aux1 = removeFila(&inicio, &fim);
+    if (aux1 > aux2) {
+      aux2 = aux1;
+    }
+    if (raiz->esq != NULL) {
+      inserirFila(&inicio, &fim, raiz->esq);
+    }
+    if (raiz->dir != NULL) {
+      inserirFila(&inicio, &fim, raiz->dir);
+    }
+  }
+
+  return aux2;
+}
+
+// Função para percorrer a árvore em ordem
+void em_ordem(PALAVRA *raiz) {
+  if (raiz != NULL) {
+    em_ordem(raiz->esq);
+    printf("%s\n", raiz->palavra);
+    em_ordem(raiz->dir);
   }
 }
 
-void maior_ocorrencias(PALAVRA *raiz, int maior){
-  if(raiz != NULL) {
-    maior_ocorrencias(raiz -> esq, maior);
-    if(raiz -> ocorrencias == maior){
-      printf("%s\n", raiz -> palavra);
+// Função para imprimir as palavras com o maior número de ocorrências
+void maior_ocorrencias(PALAVRA *raiz, int maior) {
+  if (raiz != NULL) {
+    maior_ocorrencias(raiz->esq, maior);
+    if (raiz->ocorrencias == maior) {
+      printf("%s\n", raiz->palavra);
     }
-    maior_ocorrencias(raiz -> dir, maior);
-    }
+    maior_ocorrencias(raiz->dir, maior);
+  }
 }
 
-
-void em_ordem_uma_ocorrencia(PALAVRA *raiz){
-  if(raiz != NULL){
-    em_ordem_uma_ocorrencia(raiz -> esq);
-    if(raiz -> ocorrencias == 1){
-      printf("%s\n", raiz -> palavra);
+// Função para imprimir as palavras com apenas uma ocorrência
+void em_ordem_uma_ocorrencia(PALAVRA *raiz) {
+  if (raiz != NULL) {
+    em_ordem_uma_ocorrencia(raiz->esq);
+    if (raiz->ocorrencias == 1) {
+      printf("%s\n", raiz->palavra);
     }
-    em_ordem_uma_ocorrencia(raiz -> dir);
-    }
+    em_ordem_uma_ocorrencia(raiz->dir);
+  }
 }
 
-int quantidade_nos(PALAVRA *raiz){
-    if(raiz == NULL){
-      return 0;
-    } else{
-      return 1 + quantidade_nos(raiz -> esq) + quantidade_nos(raiz -> dir);
-    }
+// Função para contar a quantidade de nós em uma árvore
+int quantidade_nos(PALAVRA *raiz) {
+  if (raiz == NULL) {
+    return 0;
+  } else {
+    return 1 + quantidade_nos(raiz->esq) + quantidade_nos(raiz->dir);
+  }
 }
-  
-int somar(INDICE tabela[26]){
+
+// Função para somar a quantidade de nós em todas as árvores da tabela
+int somar(INDICE tabela[26]) {
   int soma = 0;
-  for(int i = 0; i < 26; i++){
-    soma += quantidade_nos(tabela[i].inicio -> arvoreBinaria);
+  for (int i = 0; i < 26; i++) {
+    soma += quantidade_nos(tabela[i].inicio->arvoreBinaria);
   }
   return soma;
-  }
+}
 
-int somar_ocorrencias(INDICE tabela[26]){
+// Função para somar o número total de ocorrências em todas as árvores da tabela
+int somar_ocorrencias(INDICE tabela[26]) {
   int soma = 0;
-  for(int i = 0; i < 26; i++){
-    
-    if(tabela[i].inicio -> arvoreBinaria == NULL){
+  for (int i = 0; i < 26; i++) {
+    if (tabela[i].inicio->arvoreBinaria == NULL) {
       continue;
     }
-    soma+=tabela[i].inicio -> arvoreBinaria -> ocorrencias;
+    soma += tabela[i].inicio->arvoreBinaria->ocorrencias;
   }
-
   return soma;
-  }
-  
-void menu(){
-  
+}
+
+// Função para exibir o menu de opções
+void menu() {
   printf("\n");
   printf("===================\n");
   printf("0.Sair\n");
@@ -260,11 +265,11 @@ void menu(){
   printf("2.Remover palavra\n");
   printf("3.Ocorrências\n");
   printf("4.Contar palavras\n");
-  printf("5.Contar número de ocorrencias\n");
-  printf("6.Mostrar palavras em ordem alfabetica\n");
+  printf("5.Contar número de ocorrências\n");
+  printf("6.Mostrar palavras em ordem alfabética\n");
   printf("7.Mostrar todas as palavras de uma letra\n");
-  printf("8.Mostrar palavras com o maior numero de ocorrencias\n");
-  printf("9.Mostrar palavras com apenas 1 ocorrencia\n");
+  printf("8.Mostrar palavras com o maior número de ocorrências\n");
+  printf("9.Mostrar palavras com apenas 1 ocorrência\n");
   printf("===================\n");
   printf("\n");
 }
@@ -272,20 +277,19 @@ void menu(){
 int main(void) {
 
   INDICE tabela[26];
-  
+
   inicializa_tabela(tabela);
 
   insere_letras(tabela);
 
-
   char *result;
-  
+
   int i;
 
   int soma = 0;
 
   int maior = 0;
-  
+
   char buscar;
 
   char *pt;
@@ -293,105 +297,87 @@ int main(void) {
   char aux[30];
 
   char linha[100];
-  
+
   char op = '.';
   char palavras[100];
   FILE *arq;
-  while(op != '0'){
-    
-    
+  while (op != '0') {
     menu();
     scanf(" %c", &op);
     fflush(stdin);
-    
-    switch(op){
+
+    switch (op) {
       case '1':
-        
         scanf(" %100[^\n]", palavras);
         printf("\n");
-        
+
         pt = strtok(palavras, " ");
-        while(pt){
-           i = buscaSequencial((int)pt[0], tabela);
-           insercao(&tabela[i].inicio -> arvoreBinaria, pt);
-           pt = strtok(NULL, " ");
+        while (pt) {
+          i = buscaSequencial((int)pt[0], tabela);
+          insercao(&tabela[i].inicio->arvoreBinaria, pt);
+          pt = strtok(NULL, " ");
         }
-        
         break;
 
       case '2':
-
         scanf("%s", aux);
         i = buscaSequencial((int)aux[0], tabela);
+        remocao(&tabela[i].inicio->arvoreBinaria, aux);
+        break;
 
-        remocao(&tabela[i].inicio -> arvoreBinaria, aux);
-                     
-      break;
-    
-    case '3':
+      case '3':
         scanf("%s", aux);
         i = buscaSequencial((int)aux[0], tabela);
-       
-        if(tabela[i].inicio -> arvoreBinaria == NULL){
+        if (tabela[i].inicio->arvoreBinaria == NULL) {
           printf("%d\n", 0);
         } else {
-          printf("%s - %d\n", aux ,tabela[i].inicio -> arvoreBinaria -> ocorrencias);  
+          printf("%s - %d\n", aux, tabela[i].inicio->arvoreBinaria->ocorrencias);
         }
-        
-      break;
+        break;
 
       case '4':
         soma = somar(tabela);
-
         printf("O número total de palavras é: %d\n", soma);
-        
         break;
 
       case '5':
-
         soma = somar_ocorrencias(tabela);
-
-        printf("A soma total das ocorrencias é: %d\n", soma);
-        
-      break;
+        printf("A soma total das ocorrências é: %d\n", soma);
+        break;
 
       case '6':
-        for(int i = 97; i < 123; i++){
+        for (int i = 97; i < 123; i++) {
           int chave = i % 26;
-          em_ordem(tabela[chave].inicio -> arvoreBinaria);
+          em_ordem(tabela[chave].inicio->arvoreBinaria);
         }
-
-      break;
+        break;
 
       case '7':
         scanf(" %c", &buscar);
         int chave = (int)buscar % 26;
-        em_ordem(tabela[chave].inicio -> arvoreBinaria);
-        
-      break;
+        em_ordem(tabela[chave].inicio->arvoreBinaria);
+        break;
 
       case '8':
-        for(int i = 97; i < 123; i++){
+        for (int i = 97; i < 123; i++) {
           chave = i % 26;
-          if(percurso_em_nivel(tabela[chave].inicio -> arvoreBinaria) > maior){
-            maior = percurso_em_nivel(tabela[chave].inicio -> arvoreBinaria);
+          if (percurso_em_nivel(tabela[chave].inicio->arvoreBinaria) > maior) {
+            maior = percurso_em_nivel(tabela[chave].inicio->arvoreBinaria);
           }
         }
 
-      for(int i = 0; i < 26; i++){
-        maior_ocorrencias(tabela[i].inicio -> arvoreBinaria, maior);
-      }
-        
-      break;
+        for (int i = 0; i < 26; i++) {
+          maior_ocorrencias(tabela[i].inicio->arvoreBinaria, maior);
+        }
+        break;
 
       case '9':
-        for(int i = 97; i < 123; i++){
+        for (int i = 97; i < 123; i++) {
           chave = i % 26;
-          em_ordem_uma_ocorrencia(tabela[chave].inicio -> arvoreBinaria);
+          em_ordem_uma_ocorrencia(tabela[chave].inicio->arvoreBinaria);
         }
-      break;
-      
-      }
+        break;
+    }
   }
   return 0;
 }
